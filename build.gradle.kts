@@ -1,15 +1,16 @@
-//import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     id("org.springframework.boot") version "2.1.8.RELEASE"
     id("io.spring.dependency-management") version "1.0.8.RELEASE"
     kotlin("jvm") version "1.3.61"
     kotlin("plugin.spring") version "1.3.61"
-    jacoco//id("jacoco")  //jacoco 플러그인 추가
+    jacoco //id("jacoco")  //jacoco 플러그인 추가
 }
 
-group = "org.example"
-version = "1.0-SNAPSHOT"
+group = "com.example"
+version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 configurations {
@@ -32,20 +33,24 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+}
+
+val bootJar: BootJar by tasks
+bootJar.enabled = false
+
+//프로젝트 내의 Kotlin 컴파일 태스크 중 특정 타입인 'KotlinCompile' 에 대한 설정
+tasks.withType<KotlinCompile> {
+    kotlinOptions {         //코틀린 컴파일러에 전달되는 옵션
+        freeCompilerArgs = listOf("-Xjsr305=strict")
+        jvmTarget = "1.8"
+    }
 }
 
 tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
-tasks.test {
-/*    extensions.configure(JacocoTaskExtension::class) {
-        destinationFile = file("$buildDir/jacoco/jacoco.exec")
-    }*/
-
-    finalizedBy("jacocoTestReport")
+    useJUnitPlatform() //JUnit5 를 이용하여 테스트를 하도록 Gradle 에게 알려줌
+    finalizedBy("jacocoTestReport") //테스트 후,
 }
 
 jacoco {
@@ -53,8 +58,8 @@ jacoco {
     toolVersion = "0.8.5"
 
 //  테스트결과 리포트를 저장할 경로 변경
-//  default는 "${project.reporting.baseDir}/jacoco"
-//  reportsDir = file("$buildDir/customJacocoReportDir")
+  // default는 "${project.reporting.baseDir}/jacoco"
+  // reportsDir = file("$buildDir/customJacocoReportDir")
 }
 
 
@@ -67,8 +72,8 @@ tasks.jacocoTestReport {
         csv.isEnabled = false
 
 //      각 리포트 타입 마다 리포트 저장 경로를 설정할 수 있다.
-        html.destination = file("$buildDir/jacocoHtml")
-        xml.destination = file("$buildDir/jacoco.xml")
+//        html.destination = file("$buildDir/jacocoHtml")
+//        xml.destination = file("$buildDir/jacoco.xml")
     }
 
     finalizedBy("jacocoTestCoverageVerification")
