@@ -24,11 +24,6 @@ repositories {
 }
 
 dependencies {
-/*
-    implementation("org.jacoco:jacoco:0.8.7")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.61")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.3.61")
-*/
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -95,7 +90,7 @@ tasks.jacocoTestCoverageVerification {
             enabled = true
 
             // 룰을 체크할 단위는 클래스 단위
-            element = "CLASS"
+            element = "METHOD"
 
             // 브랜치 커버리지를 최소한 90% 만족시켜야 한다.
             limit {
